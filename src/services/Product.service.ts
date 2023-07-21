@@ -3,14 +3,14 @@ import { productRepository } from "../repositories";
 import { Product } from "../entities";
 
 class ProductService {
-  ProductCreator = async (req: Request): Promise<any> => {
+  productCreator = async (req: Request): Promise<any> => {
     const body = req.body;
     const product: Product = await productRepository.save(body);
 
     return product;
   };
 
-  ProductsLoader = async (req: Request) => {
+  productsLoader = async (req: Request) => {
     const products: Product[] = await productRepository.all();
 
     return {
@@ -19,7 +19,7 @@ class ProductService {
     };
   };
 
-  ProductLoader = async (req: Request) => {
+  productLoader = async (req: Request) => {
     const product: Product = await productRepository.findOne({
       id: req.params.id,
     });
