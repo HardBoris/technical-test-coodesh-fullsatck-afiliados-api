@@ -1,18 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Product } from "./index";
+import { compare } from "bcrypt";
 
-@Entity()
+@Entity("users")
 export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @Column({ unique: true })
+  name: string;
 
-    @Column()
-    firstName: string
+  @Column({ nullable: true })
+  password: string;
 
-    @Column()
-    lastName: string
+  @OneToMany(() => Product, (product) => product.producer, {
+    eager: true,
+    cascade: true,
+  })
+  products: Product[];
 
-    @Column()
-    age: number
-
+  comparePwd = async (pwdString: string): Promise<boolean> => {
+    return await compare(pwdString, this.password);
+  };
 }
