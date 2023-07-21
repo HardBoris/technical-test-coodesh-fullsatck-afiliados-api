@@ -1,10 +1,10 @@
-import { hashSync } from "bcrypt";
 import { MigrationInterface, QueryRunner } from "typeorm";
+import { hashSync } from "bcrypt";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-export class AllEntities1689966073799 implements MigrationInterface {
-  name = "AllEntities1689966073799";
+export class AllEntities1689971122169 implements MigrationInterface {
+  name = "AllEntities1689971122169";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -17,13 +17,10 @@ export class AllEntities1689966073799 implements MigrationInterface {
       `CREATE TABLE "movements" ("id" SERIAL NOT NULL, "date" TIMESTAMP NOT NULL, "price" double precision NOT NULL, "sellerName" character varying, "product_description" character varying, "typeId" integer, CONSTRAINT "PK_5a8e3da15ab8f2ce353e7f58f67" PRIMARY KEY ("id"))`
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."movement_types_kind_enum" AS ENUM('entrada', 'saída')`
+      `CREATE TABLE "movement_types" ("id" SERIAL NOT NULL, "type" character varying NOT NULL, "kind" character varying NOT NULL, CONSTRAINT "PK_157378727fd686272582297d37f" PRIMARY KEY ("id"))`
     );
     await queryRunner.query(
-      `CREATE TABLE "movement_types" ("id" SERIAL NOT NULL, "type" character varying NOT NULL, "kind" "public"."movement_types_kind_enum" NOT NULL, CONSTRAINT "PK_157378727fd686272582297d37f" PRIMARY KEY ("id"))`
-    );
-    await queryRunner.query(
-      `ALTER TABLE "products" ADD CONSTRAINT "FK_13bbdd8e0adff769ee6f784011f" FOREIGN KEY ("producerName") REFERENCES "users"("name") ON DELETE CASCADE ON UPDATE CASCADE`
+      `ALTER TABLE "products" ADD CONSTRAINT "FK_13bbdd8e0adff769ee6f784011f" FOREIGN KEY ("producerName") REFERENCES "users"("name") ON DELETE NO ACTION ON UPDATE NO ACTION`
     );
     await queryRunner.query(
       `ALTER TABLE "movements" ADD CONSTRAINT "FK_26f76478fe9874d1f9bfce7bd06" FOREIGN KEY ("sellerName") REFERENCES "users"("name") ON DELETE NO ACTION ON UPDATE NO ACTION`
@@ -38,6 +35,9 @@ export class AllEntities1689966073799 implements MigrationInterface {
       `INSERT INTO "users" ("name", "password") VALUES ('${
         process.env.ADMIN_NAME
       }', '${hashSync(process.env.ADMIN_PASSWORD, 10)}')`
+    );
+    await queryRunner.query(
+      `INSERT INTO "movement_types" ("type", "kind") VALUES ('Venda produtor', 'Entrada'),('Venda afiliado', 'Entrada'), ('Comissão paga', 'Saída'), ('Comissão recebida', 'Entrada')`
     );
   }
 
@@ -55,7 +55,6 @@ export class AllEntities1689966073799 implements MigrationInterface {
       `ALTER TABLE "products" DROP CONSTRAINT "FK_13bbdd8e0adff769ee6f784011f"`
     );
     await queryRunner.query(`DROP TABLE "movement_types"`);
-    await queryRunner.query(`DROP TYPE "public"."movement_types_kind_enum"`);
     await queryRunner.query(`DROP TABLE "movements"`);
     await queryRunner.query(`DROP TABLE "products"`);
     await queryRunner.query(`DROP TABLE "users"`);
