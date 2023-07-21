@@ -3,18 +3,18 @@ import { Response } from "express";
 type TMessage = string | Record<string, any>;
 
 class ErrorHandler {
-  public statusCode: number;
+  public status: number;
   public message: TMessage;
 
-  constructor(statusCode: number, message: TMessage) {
-    this.statusCode = statusCode;
+  constructor(status: number, message: TMessage) {
+    this.status = status;
     this.message = message;
   }
 }
 
 const errorHandler = (err: Error, res: Response) => {
   if (err instanceof ErrorHandler) {
-    return res.status(err.statusCode).json({ message: err.message });
+    return res.status(err.status).json({ message: err.message });
   }
 
   console.error(err);
