@@ -5,6 +5,8 @@ import { Movement } from "../entities";
 interface IMovementRepo {
   save: (movement: Partial<Movement>) => Promise<Movement>;
   all: () => Promise<Movement[]>;
+  allByUser: (payload: object) => Promise<Movement[]>;
+  allByProduct: (payload: object) => Promise<Movement[]>;
   findOne: (payload: object) => Promise<Movement>;
   delete: (id: string) => Promise<DeleteResult>;
 }
@@ -18,7 +20,20 @@ class MovementRepo implements IMovementRepo {
 
   save = async (movement: Partial<Movement>) =>
     await this.ormRepo.save(movement);
-  all = async () => await this.ormRepo.find();
+  all = async () =>
+    await this.ormRepo.find({
+      relations: { seller: true, product: true, type: true },
+    });
+  allByUser = async (payload: object) =>
+    await this.ormRepo.find({
+      where: { ...payload },
+      relations: { product: true, type: true },
+    });
+  allByProduct = async (payload: object) =>
+    await this.ormRepo.find({
+      where: { ...payload },
+      relations: { seller: true, type: true },
+    });
   findOne = async (payload: object) => {
     return await this.ormRepo.findOneBy({ ...payload });
   };

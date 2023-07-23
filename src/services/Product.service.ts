@@ -21,7 +21,7 @@ class ProductService {
 
   productLoader = async (req: Request) => {
     const product: Product = await productRepository.findOne({
-      id: req.params.id,
+      product: req.params.product,
     });
     return {
       status: 200,

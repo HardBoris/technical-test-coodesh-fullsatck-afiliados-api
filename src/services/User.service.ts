@@ -1,8 +1,7 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import { User } from "../entities";
 import { userRepository } from "../repositories";
 import { ErrorHandler } from "../errors";
-import { hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 
 interface ILogin {
@@ -12,13 +11,10 @@ interface ILogin {
 
 class UserService {
   userCreator = async (req: Request): Promise<any> => {
-    const { name, password } = req.body;
-
-    const hashPassword = await hash(password, 10);
+    const { name } = req.body;
 
     const user: User = await userRepository.save({
       name: name,
-      password: hashPassword,
     });
 
     return { user: user.name };
@@ -59,7 +55,7 @@ class UserService {
 
   userLoader = async (req: Request) => {
     const user: User = await userRepository.findOne({
-      id: req.params.id,
+      name: req.params.name,
     });
 
     if (!user) {
