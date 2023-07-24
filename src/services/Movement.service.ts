@@ -1,16 +1,29 @@
 import { Request } from "express";
-import { movementRepository } from "../repositories";
+import {
+  movementRepository,
+  productRepository,
+  userRepository,
+} from "../repositories";
 import { Movement } from "../entities";
 import { movementShape } from "../shapes";
 
 class MovementService {
+  user = async ({ body }: Request) =>
+    await userRepository.findOne({ userName: body.seller });
+  product = async ({ body }: Request) =>
+    await productRepository.findOne({ product: body.product });
   movementCreator = async (req: Request): Promise<any> => {
     const body = req.body;
-    const date = new Date(body.date);
+
+    const user = await this.user(req);
+    !user && (await userRepository.save({ name: body.seller }));
+
+    const product = await this.product(req);
+    !product && (await productRepository.save({ product: body.product }));
 
     const movement: Movement = await movementRepository.save({
       ...body,
-      date: date,
+      date: new Date(body.date),
     });
 
     return movement;
