@@ -8,9 +8,9 @@ const verifyUserExists = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { name } = req.body;
+  const { userName } = req.body;
   const foundUser: User = await userRepository.findOne({
-    name: name,
+    name: userName,
   });
 
   if (foundUser) {

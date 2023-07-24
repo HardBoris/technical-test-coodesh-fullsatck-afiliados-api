@@ -11,26 +11,26 @@ interface ILogin {
 
 class UserService {
   userCreator = async (req: Request): Promise<any> => {
-    const { name } = req.body;
+    const { userName } = req.body;
 
     const user: User = await userRepository.save({
-      name: name,
+      name: userName,
     });
 
     return { user: user.name };
   };
 
   userLoger = async (req: Request): Promise<ILogin> => {
-    const { name, password } = req.body;
+    const { userName, userPassword } = req.body;
     const user: User = await userRepository.findOne({
-      name: name,
+      name: userName,
     });
 
     if (!user) {
       throw new ErrorHandler(401, "Invalid credentials!");
     }
 
-    if (!(await user.comparePwd(password))) {
+    if (!(await user.comparePwd(userPassword))) {
       throw new ErrorHandler(401, "Invalid credentials!");
     }
 
