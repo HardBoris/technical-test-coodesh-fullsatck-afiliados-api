@@ -15,12 +15,6 @@ class MovementService {
   movementCreator = async (req: Request): Promise<any> => {
     const body = req.body;
 
-    const user = await this.user(req);
-    !user && (await userRepository.save({ name: body.seller }));
-
-    const product = await this.product(req);
-    !product && (await productRepository.save({ product: body.product }));
-
     const movement: Movement = await movementRepository.save({
       ...body,
       date: new Date(body.date),
