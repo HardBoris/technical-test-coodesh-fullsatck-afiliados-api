@@ -7,7 +7,7 @@ const userRouter = Router();
 userRouter.post(
   "/coodesh-api/users/register",
   tokenValidator,
-  verifyUserExists,
+  // verifyUserExists,
   userController.userCreator
 );
 

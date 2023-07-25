@@ -4,22 +4,36 @@ import {
   productRepository,
   userRepository,
 } from "../repositories";
-import { Movement } from "../entities";
+import { Movement, Product, User } from "../entities";
 import { movementShape } from "../shapes";
 
 class MovementService {
   user = async ({ body }: Request) =>
-    await userRepository.findOne({ userName: body.seller });
+    await userRepository.findOne({ name: body.seller });
   product = async ({ body }: Request) =>
     await productRepository.findOne({ product: body.product });
   movementCreator = async (req: Request): Promise<any> => {
     const body = req.body;
 
-    const user = await this.user(req);
+    const user: User = await this.user(req);
     !user && (await userRepository.save({ name: body.seller }));
 
-    const product = await this.product(req);
-    !product && (await productRepository.save({ product: body.product }));
+    const product: Product = await this.product(req);
+    if (!product && body.type === "1") {
+      await productRepository.save({
+        product: body.product,
+        producer: body.seller,
+      });
+    }
+    if (product && body.type === "1") {
+      await productRepository.save({
+        product: body.product,
+        producer: body.seller,
+      });
+    }
+    if (!product && body.type !== "1") {
+      await productRepository.save({ product: body.product });
+    }
 
     const movement: Movement = await movementRepository.save({
       ...body,

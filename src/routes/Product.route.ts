@@ -7,7 +7,7 @@ const productRouter = Router();
 productRouter.post(
   "/coodesh-api/products/register",
   tokenValidator,
-  verifyProductExists,
+  // verifyProductExists,
   productController.productCreator
 );
 
