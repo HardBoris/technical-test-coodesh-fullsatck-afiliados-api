@@ -17,7 +17,7 @@ class ProductRepo implements IProductRepo {
   }
 
   save = async (product: Partial<Product>) => await this.ormRepo.save(product);
-  all = async () => await this.ormRepo.find();
+  all = async () => await this.ormRepo.find({ relations: { producer: true } });
   findOne = async (payload: object) => {
     return await this.ormRepo.findOneBy({ ...payload });
   };

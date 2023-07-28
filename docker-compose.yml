@@ -1,0 +1,25 @@
+version: "3"
+services:
+  api:
+    container_name: bgFullstackAfiliadosApi
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./src:/usr/app/
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    depends_on:
+      - pg
+    command: bash -c 'yarn migration:run && yarn dev'
+  pg:
+    container_name: bgFullstackAfiliadosDb
+    image: postgres
+    env_file:
+      - .env
+    expose:
+      - 32768
+    ports:
+      - 32768:5432
