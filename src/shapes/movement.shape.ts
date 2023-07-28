@@ -47,7 +47,7 @@ class MovementShape {
     .of(
       yup.object().shape({
         id: yup.number(),
-        date: yup.string(),
+        date: yup.date(),
         price: yup.number(),
         seller: yup.object().shape({
           name: yup.string(),

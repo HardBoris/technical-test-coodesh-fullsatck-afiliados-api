@@ -24,7 +24,10 @@ class MovementService {
   };
 
   movementsLoader = async (req: Request) => {
-    const movements: Movement[] = await movementRepository.all();
+    let movements: Movement[] = await movementRepository.all();
+    movements = movements.sort((a, b) =>
+      a.date < b.date ? -1 : a.date > b.date ? 1 : 0
+    );
 
     return {
       status: 200,

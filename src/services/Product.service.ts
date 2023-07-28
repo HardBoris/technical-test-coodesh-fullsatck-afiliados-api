@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { productRepository } from "../repositories";
 import { Product } from "../entities";
+import { productShape } from "../shapes";
 
 class ProductService {
   productCreator = async (req: Request): Promise<any> => {
@@ -15,7 +16,9 @@ class ProductService {
 
     return {
       status: 200,
-      products: products,
+      products: await productShape.products.validate(products, {
+        stripUnknown: true,
+      }),
     };
   };
 
